@@ -58,6 +58,16 @@ backend_connection({IpAddress, Port}) ->
             {connected, Client1};
         {error, Reason} ->
             {error, Reason}
+    end;
+backend_connection({ssl, IpAddress, Port}) ->
+    TcpBufSize = vegur_utils:config(client_tcp_buffer_limit),
+    {ok, Client} = vegur_client:init([{packet_size, TcpBufSize},
+                                      {recbuf, TcpBufSize}]),
+    case vegur_client:connect(ranch_ssl, IpAddress, Port, Client) of
+        {ok, Client1} ->
+            {connected, Client1};
+        {error, Reason} ->
+            {error, Reason}
     end.
 
 -spec send_headers(Method, Headers, Body, Path, Url, Req, Client) ->

@@ -848,7 +848,9 @@ get_stats(Socket, DefaultSent, DefaultRecv) when is_port(Socket) ->
         {ok, [{recv_oct, RecvTotal},
               {send_oct, SentTotal}]} ->
             {SentTotal, RecvTotal}
-    end.
+    end;
+get_stats({sslsocket, {gen_tcp, Socket, _, _}, _}, DefaultSent, DefaultRecv) ->
+    get_stats(Socket, DefaultSent, DefaultRecv).
 
 %% @doc Fetches the request log of a given client.
 -spec log(client()) -> vegur_req_log:request_log().
